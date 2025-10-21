@@ -1,0 +1,195 @@
+.payment-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.payment-header {
+  margin-bottom: 30px;
+}
+
+.payment-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1E88E5;
+  margin-bottom: 20px;
+}
+
+.payment-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1E88E5;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.payment-table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payment-table th {
+  background: #f8f9fa;
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.payment-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.payment-table tr:hover {
+  background: #f8f9fa;
+}
+
+.payment-id {
+  font-weight: 600;
+  color: #1E88E5;
+}
+
+.payment-order {
+  font-weight: 500;
+  color: #333;
+}
+
+.payment-customer {
+  font-weight: 500;
+}
+
+.payment-amount {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.method-icon {
+  font-size: 16px;
+}
+
+.method-text {
+  font-size: 14px;
+  color: #333;
+}
+
+.payment-date {
+  color: #666;
+  font-size: 14px;
+}
+
+.payment-description {
+  max-width: 200px;
+  font-size: 14px;
+  color: #666;
+}
+
+.payment-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  text-align: center;
+  display: inline-block;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-view, .btn-process {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-view {
+  background: #1E88E5;
+  color: white;
+}
+
+.btn-view:hover {
+  background: #1976D2;
+}
+
+.btn-process {
+  background: #28a745;
+  color: white;
+}
+
+.btn-process:hover {
+  background: #218838;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .payment-table {
+    font-size: 14px;
+  }
+  
+  .payment-table th,
+  .payment-table td {
+    padding: 12px 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .payment-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .payment-table-container {
+    overflow-x: auto;
+  }
+  
+  .payment-table {
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-stats {
+    grid-template-columns: 1fr;
+  }
+}
