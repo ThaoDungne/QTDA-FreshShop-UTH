@@ -12,14 +12,33 @@
 .sales-title {
   font-size: 32px;
   font-weight: 700;
-  color: #1E88E5;
+  color: #1e88e5;
   margin-bottom: 10px;
 }
 
 .sales-subtitle {
   font-size: 18px;
   color: #666;
-  margin: 0;
+  margin: 0 0 20px 0;
+}
+
+.create-order-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.create-order-btn:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
 }
 
 .vegetables-grid {
@@ -78,12 +97,12 @@
 .vegetable-price {
   font-size: 16px;
   font-weight: 500;
-  color: #1E88E5;
+  color: #1e88e5;
   margin: 0 0 16px 0;
 }
 
 .add-to-cart-btn {
-  background: #1E88E5;
+  background: #1e88e5;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -96,7 +115,7 @@
 }
 
 .add-to-cart-btn:hover {
-  background: #1976D2;
+  background: #1976d2;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
 }
@@ -107,15 +126,15 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
-  
+
   .vegetable-image-container {
     height: 160px;
   }
-  
+
   .vegetable-name {
     font-size: 16px;
   }
-  
+
   .vegetable-price {
     font-size: 14px;
   }
@@ -126,7 +145,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
   }
-  
+
   .vegetable-image-container {
     height: 150px;
   }
@@ -137,11 +156,11 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
-  
+
   .sales-title {
     font-size: 28px;
   }
-  
+
   .sales-subtitle {
     font-size: 16px;
   }
@@ -152,11 +171,11 @@
     grid-template-columns: 1fr;
     gap: 14px;
   }
-  
+
   .sales-title {
     font-size: 24px;
   }
-  
+
   .vegetable-image-container {
     height: 140px;
   }
