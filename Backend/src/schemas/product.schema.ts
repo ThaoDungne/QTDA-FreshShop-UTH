@@ -30,6 +30,9 @@ export class Product {
   @Prop({ trim: true })
   barcode?: string;
 
+  @Prop({ trim: true })
+  imageUrl?: string;
+
   @Prop({ enum: Object.values(ProductStatus), default: ProductStatus.ACTIVE })
   status: string;
 

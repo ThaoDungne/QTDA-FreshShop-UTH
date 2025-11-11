@@ -21,22 +21,68 @@ export class CustomerService {
   async create(
     createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerDocument> {
-    // Check if phone already exists
-    const existingCustomer = await this.customerModel.findOne({
-      phone: createCustomerDto.phone,
-      deletedAt: null,
-    });
+    try {
+      console.log('Creating customer with data:', createCustomerDto);
+      
+      // Check if phone already exists
+      const existingCustomer = await this.customerModel.findOne({
+        phone: createCustomerDto.phone,
+        deletedAt: null,
+      });
 
-    if (existingCustomer) {
-      throw new ConflictException('Phone number already exists');
+      if (existingCustomer) {
+        throw new ConflictException('Phone number already exists');
+      }
+
+      // Prepare customer data - Mongoose will handle the conversion
+      const customer = new this.customerModel({
+        fullName: createCustomerDto.fullName,
+        phone: createCustomerDto.phone,
+        ...(createCustomerDto.email && { email: createCustomerDto.email }),
+        ...(createCustomerDto.gender && { gender: createCustomerDto.gender }),
+        ...(createCustomerDto.birthDate && {
+          birthDate: new Date(createCustomerDto.birthDate),
+        }),
+        ...(createCustomerDto.address && { address: createCustomerDto.address }),
+        ...(createCustomerDto.loyaltyTier && {
+          loyaltyTier: createCustomerDto.loyaltyTier,
+        }),
+        ...(createCustomerDto.note && { note: createCustomerDto.note }),
+      });
+      const savedCustomer = await customer.save();
+      console.log('Customer created successfully:', savedCustomer._id);
+      return savedCustomer;
+    } catch (error: any) {
+      console.error('Error creating customer:', error);
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      // Handle validation errors
+      if (error.name === 'ValidationError' && error.errors) {
+        const messages = Object.values(error.errors).map(
+          (err: { message?: string }) => err.message || 'Validation error'
+        );
+        throw new ConflictException(messages.join(', '));
+      }
+      // Handle duplicate key errors
+      if (error.code === 11000) {
+        throw new ConflictException('Phone number already exists');
+      }
+      throw error;
     }
-
-    const customer = new this.customerModel(createCustomerDto);
-    return await customer.save();
   }
 
   async findAll(): Promise<CustomerDocument[]> {
-    return await this.customerModel.find({ deletedAt: null });
+    try {
+      const customers = await this.customerModel
+        .find({ deletedAt: null })
+        .sort({ createdAt: -1 })
+        .exec();
+      return customers;
+    } catch (error: any) {
+      console.error('Error in findAll customers:', error);
+      throw error;
+    }
   }
 
   async findOne(id: string): Promise<CustomerDocument> {

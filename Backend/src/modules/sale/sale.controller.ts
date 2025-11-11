@@ -6,14 +6,12 @@ import {
   Patch,
   Param,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiQuery,
-  ApiBearerAuth,
   ApiSecurity,
 } from '@nestjs/swagger';
 import { PosService } from './pos.service';
@@ -21,12 +19,13 @@ import {
   CreateInvoiceDto,
   VoidInvoiceDto,
   InvoiceQueryDto,
+  UpdateInvoiceStatusDto,
 } from './dto/sale.dto';
-import { ApiKeyGuard } from '../auth/guards';
+import { ApiKeyOnly } from '../../common/decorators/auth-mode.decorator';
 
 @ApiTags('Point of Sale (POS)')
 @Controller('pos')
-@UseGuards(ApiKeyGuard)
+@ApiKeyOnly() // Chỉ yêu cầu API Key, không cần JWT token
 @ApiSecurity('api-key')
 export class SaleController {
   constructor(private readonly posService: PosService) {}
@@ -46,8 +45,7 @@ export class SaleController {
   @ApiOperation({ summary: 'Get invoices with filters' })
   @ApiResponse({ status: 200, description: 'List of invoices' })
   getInvoices(@Query() query: InvoiceQueryDto) {
-    // TODO: Implement invoice listing with filters
-    return { message: 'Invoice listing not implemented yet' };
+    return this.posService.getInvoices(query);
   }
 
   @Get('invoices/:id')
@@ -55,8 +53,7 @@ export class SaleController {
   @ApiResponse({ status: 200, description: 'Invoice found' })
   @ApiResponse({ status: 404, description: 'Invoice not found' })
   getInvoice(@Param('id') id: string) {
-    // TODO: Implement get invoice by ID
-    return { message: 'Get invoice by ID not implemented yet' };
+    return this.posService.getInvoiceById(id);
   }
 
   @Patch('invoices/:id/void')
@@ -66,6 +63,18 @@ export class SaleController {
   @ApiResponse({ status: 404, description: 'Invoice not found' })
   voidInvoice(@Param('id') id: string, @Body() voidDto: VoidInvoiceDto) {
     return this.posService.voidInvoice(id, 'admin_id', voidDto.reason); // TODO: Get from auth
+  }
+
+  @Patch('invoices/:id/status')
+  @ApiOperation({ summary: 'Update invoice status' })
+  @ApiResponse({ status: 200, description: 'Invoice status updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid status' })
+  @ApiResponse({ status: 404, description: 'Invoice not found' })
+  updateInvoiceStatus(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateInvoiceStatusDto,
+  ) {
+    return this.posService.updateInvoiceStatus(id, updateDto.status);
   }
 
   @Get('invoices/:id/print')

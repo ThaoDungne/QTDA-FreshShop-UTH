@@ -49,6 +49,14 @@ export class CreateProductDto {
   barcode?: string;
 
   @ApiPropertyOptional({
+    description: 'Product image URL',
+    example: 'https://example.com/image.jpg',
+  })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @ApiPropertyOptional({
     description: 'Product status',
     enum: ProductStatus,
     default: ProductStatus.ACTIVE,
@@ -107,6 +115,14 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   barcode?: string;
+
+  @ApiPropertyOptional({
+    description: 'Product image URL',
+    example: 'https://example.com/image.jpg',
+  })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 
   @ApiPropertyOptional({ description: 'Product status' })
   @IsOptional()

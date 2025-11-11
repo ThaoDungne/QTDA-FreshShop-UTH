@@ -3,9 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Query,
+  Request,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -38,14 +39,36 @@ export class InventoryController {
     description: 'Inventory lot created successfully',
   })
   @ApiResponse({ status: 400, description: 'Invalid product or supplier' })
-  createLot(@Body() createLotDto: CreateInventoryLotDto) {
-    const serviceDto: CreateInventoryLotServiceDto = {
-      ...createLotDto,
-      receivedDate: createLotDto.receivedDate
-        ? new Date(createLotDto.receivedDate)
-        : undefined,
-    };
-    return this.inventoryService.createInventoryLot(serviceDto, 'admin_id'); // TODO: get from req.user.sub
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async createLot(
+    @Body() createLotDto: CreateInventoryLotDto,
+    @Request() req: any,
+  ) {
+    try {
+      const serviceDto: CreateInventoryLotServiceDto = {
+        ...createLotDto,
+        receivedDate: createLotDto.receivedDate
+          ? new Date(createLotDto.receivedDate)
+          : undefined,
+      };
+      // Lấy actorId từ JWT token (req.user.sub hoặc req.user._id hoặc req.user.id)
+      const actorId = (req.user?.sub ||
+        req.user?._id ||
+        req.user?.id) as string;
+      if (!actorId) {
+        throw new UnauthorizedException(
+          'User ID not found in token. Please ensure you are authenticated.',
+        );
+      }
+      return await this.inventoryService.createInventoryLot(
+        serviceDto,
+        actorId,
+      );
+    } catch (error: any) {
+      // Log error để debug
+      console.error('Error creating inventory lot:', error);
+      throw error;
+    }
   }
 
   @Post('adjust')
@@ -55,10 +78,15 @@ export class InventoryController {
     status: 400,
     description: 'Invalid adjustment or insufficient stock',
   })
-  adjustStock(@Body() adjustDto: StockAdjustmentDto) {
+  adjustStock(@Body() adjustDto: StockAdjustmentDto, @Request() req: any) {
+    // Lấy actorId từ JWT token (req.user.sub hoặc req.user._id)
+    const actorId = (req.user?.sub || req.user?._id || req.user?.id) as string;
+    if (!actorId) {
+      throw new UnauthorizedException('User ID not found in token');
+    }
     const serviceDto: StockAdjustmentServiceDto = {
       ...adjustDto,
-      actorId: 'admin_id', // TODO: get from req.user.sub
+      actorId,
     };
     return this.inventoryService.adjustStock(serviceDto);
   }
@@ -87,7 +115,7 @@ export class InventoryController {
   @Get('report')
   @ApiOperation({ summary: 'Get inventory report' })
   @ApiResponse({ status: 200, description: 'Inventory report' })
-  getInventoryReport(@Query() query: StockQueryDto) {
+  getInventoryReport(@Query() _query: StockQueryDto) {
     // TODO: Implement inventory report service
     return { message: 'Inventory report not implemented yet' };
   }

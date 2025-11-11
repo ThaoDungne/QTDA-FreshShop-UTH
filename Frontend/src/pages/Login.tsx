@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { authService } from "../services";
 
 interface LoginProps {
   onLogin: (username: string, password: string) => void;
@@ -10,22 +11,32 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
-    setTimeout(() => {
-      if (
-        (username === "admin" && password === "admin123") ||
-        (username === "user" && password === "user123")
-      ) {
+    try {
+      // Gọi API đăng nhập
+      const response = await authService.login({
+        username,
+        password,
+      });
+
+      // Nếu đăng nhập thành công, gọi callback onLogin
+      if (response.access_token) {
         onLogin(username, password);
-      } else {
-        setError("Tên đăng nhập hoặc mật khẩu không đúng");
       }
+    } catch (err: any) {
+      // Xử lý lỗi
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Tên đăng nhập hoặc mật khẩu không đúng";
+      setError(errorMessage);
+    } finally {
       setIsLoading(false);
-    }, 800);
+    }
   };
 
   return (

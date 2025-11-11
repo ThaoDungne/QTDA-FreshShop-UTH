@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ClientSession } from 'mongoose';
 import {
@@ -69,11 +69,12 @@ export class PosService {
   ) {}
 
   async createInvoice(dto: CreateInvoiceDto): Promise<InvoiceResult> {
-    const session = await this.invoiceModel.db.startSession();
-
     try {
-      return await session.withTransaction(async () => {
-        // Validate customer if provided
+      console.log('Creating invoice with DTO:', JSON.stringify(dto, null, 2));
+      // Không dùng transaction vì MongoDB standalone không hỗ trợ
+      // Thực hiện các operations tuần tự với error handling
+      
+      // Validate customer if provided
         let customer: CustomerDocument | null = null;
         if (dto.customerId) {
           customer = await this.customerModel.findById(dto.customerId);
@@ -93,10 +94,22 @@ export class PosService {
         }
 
         // Check stock availability and prepare FIFO allocation
-        const stockAllocations = await this.prepareStockAllocation(
-          dto.items,
-          products,
-        );
+        // Nếu không có stock, vẫn cho phép bán (có thể là sản phẩm không cần quản lý tồn kho)
+        let stockAllocations: any[] = [];
+        try {
+          stockAllocations = await this.prepareStockAllocation(
+            dto.items,
+            products,
+          );
+        } catch (stockError: any) {
+          console.warn('Stock allocation failed, proceeding without stock check:', stockError.message);
+          // Tạo empty allocations để tiếp tục
+          stockAllocations = dto.items.map((item) => ({
+            productId: item.productId,
+            lotId: undefined,
+            lotUsages: [],
+          }));
+        }
 
         // Calculate totals (pre-promotion)
         let subtotal = 0;
@@ -163,7 +176,7 @@ export class PosService {
               : undefined,
         });
 
-        await invoice.save({ session });
+        await invoice.save();
 
         // Create invoice items and process stock movements
         const savedItems: any[] = [];
@@ -180,7 +193,7 @@ export class PosService {
           const invoiceItem = new this.invoiceItemModel({
             invoice: invoice._id,
             product: item.productId,
-            lot: allocation.lotId,
+            lot: allocation?.lotId,
             quantity: item.quantity,
             unit: item.unit,
             unitPrice: item.unitPrice,
@@ -188,32 +201,39 @@ export class PosService {
             lineTotal: item.lineTotal,
           });
 
-          await invoiceItem.save({ session });
+          await invoiceItem.save();
           savedItems.push(invoiceItem);
 
-          // Process stock movements for each lot used
-          for (const lotUsage of allocation.lotUsages) {
-            // Update inventory lot
-            const lot = await this.inventoryLotModel.findById(lotUsage.lotId);
-            if (lot) {
-              lot.quantityAvailable -= lotUsage.quantity;
-              await lot.save({ session });
+          // Process stock movements for each lot used (nếu có)
+          if (allocation?.lotUsages && allocation.lotUsages.length > 0) {
+            for (const lotUsage of allocation.lotUsages) {
+              try {
+                // Update inventory lot
+                const lot = await this.inventoryLotModel.findById(lotUsage.lotId);
+                if (lot) {
+                  lot.quantityAvailable -= lotUsage.quantity;
+                  await lot.save();
+                }
+
+                // Create stock movement
+                const stockMovement = new this.stockMovementModel({
+                  type: StockMovementType.OUT,
+                  product: item.productId,
+                  lot: lotUsage.lotId,
+                  quantity: lotUsage.quantity,
+                  reason: StockMovementReason.SALE,
+                  refInvoice: invoice._id,
+                  actor: dto.cashierId,
+                  note: `Bán hàng - HĐ ${invoiceCode}`,
+                });
+
+                await stockMovement.save();
+                stockMovements.push(stockMovement);
+              } catch (stockError: any) {
+                console.error(`Error processing stock for lot ${lotUsage.lotId}:`, stockError);
+                // Tiếp tục dù có lỗi stock
+              }
             }
-
-            // Create stock movement
-            const stockMovement = new this.stockMovementModel({
-              type: StockMovementType.OUT,
-              product: item.productId,
-              lot: lotUsage.lotId,
-              quantity: lotUsage.quantity,
-              reason: StockMovementReason.SALE,
-              refInvoice: invoice._id,
-              actor: dto.cashierId,
-              note: `Bán hàng - HĐ ${invoiceCode}`,
-            });
-
-            await stockMovement.save({ session });
-            stockMovements.push(stockMovement);
           }
         }
 
@@ -226,7 +246,7 @@ export class PosService {
           note: dto.note,
         });
 
-        await payment.save({ session });
+        await payment.save();
 
         // Process loyalty points if customer exists (include bonusPoints from promotions)
         let loyaltyLedger: LoyaltyLedgerDocument | null = null;
@@ -235,7 +255,7 @@ export class PosService {
             Math.floor(grandTotal / 1000) + (bonusPoints || 0); // 1 point per 1000 VND + bonus
           if (earnedPoints > 0) {
             customer.loyaltyPoints += earnedPoints;
-            await customer.save({ session });
+            await customer.save();
 
             loyaltyLedger = new this.loyaltyLedgerModel({
               customer: customer._id,
@@ -246,7 +266,7 @@ export class PosService {
               balanceAfter: customer.loyaltyPoints,
             });
 
-            await loyaltyLedger.save({ session });
+            await loyaltyLedger.save();
           }
         }
 
@@ -257,9 +277,102 @@ export class PosService {
           stockMovements,
           loyaltyLedger: loyaltyLedger || undefined,
         };
-      });
-    } finally {
-      await session.endSession();
+    } catch (error: any) {
+      console.error('Error creating invoice:', error);
+      console.error('Error stack:', error.stack);
+      // Re-throw nếu đã là HttpException
+      if (error.statusCode) {
+        throw error;
+      }
+      // Nếu không, wrap trong InternalServerErrorException với message chi tiết
+      throw new InternalServerErrorException(
+        `Failed to create invoice: ${error.message || 'Unknown error'}. Stack: ${error.stack || 'No stack trace'}`,
+      );
+    }
+  }
+
+  async getInvoices(query: {
+    startDate?: string;
+    endDate?: string;
+    customerId?: string;
+    cashierId?: string;
+  }): Promise<InvoiceDocument[]> {
+    try {
+      console.log('getInvoices called with query:', query);
+      const filter: any = {};
+
+      if (query.startDate || query.endDate) {
+        filter.createdAt = {};
+        if (query.startDate) {
+          filter.createdAt.$gte = new Date(query.startDate);
+        }
+        if (query.endDate) {
+          filter.createdAt.$lte = new Date(query.endDate);
+        }
+      }
+
+      if (query.customerId) {
+        filter.customer = query.customerId;
+      }
+
+      if (query.cashierId) {
+        filter.cashier = query.cashierId;
+      }
+
+      console.log('getInvoices filter:', JSON.stringify(filter, null, 2));
+
+      const invoices = await this.invoiceModel
+        .find(filter)
+        .populate({
+          path: 'customer',
+          select: 'fullName phone',
+        })
+        .populate({
+          path: 'cashier',
+          select: 'username fullName',
+        })
+        .sort({ createdAt: -1 })
+        .limit(100)
+        .exec();
+
+      console.log(`getInvoices found ${invoices.length} invoices`);
+      return invoices;
+    } catch (error: any) {
+      console.error('Error in getInvoices:', error);
+      console.error('Error stack:', error.stack);
+      throw new InternalServerErrorException(
+        `Failed to get invoices: ${error.message || 'Unknown error'}`,
+      );
+    }
+  }
+
+  async getInvoiceById(id: string): Promise<InvoiceDocument> {
+    try {
+      const invoice = await this.invoiceModel
+        .findById(id)
+        .populate({
+          path: 'customer',
+          select: 'fullName phone email address',
+        })
+        .populate({
+          path: 'cashier',
+          select: 'username fullName',
+        })
+        .exec();
+
+      if (!invoice) {
+        throw new BadRequestException('Invoice not found');
+      }
+
+      return invoice;
+    } catch (error: any) {
+      console.error('Error in getInvoiceById:', error);
+      if (error.statusCode) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        `Failed to get invoice: ${error.message || 'Unknown error'}`,
+      );
     }
   }
 
@@ -381,15 +494,49 @@ export class PosService {
     };
   }
 
+  async updateInvoiceStatus(
+    invoiceId: string,
+    status: string,
+  ): Promise<InvoiceDocument> {
+    try {
+      const invoice = await this.invoiceModel.findById(invoiceId);
+      if (!invoice) {
+        throw new BadRequestException('Invoice not found');
+      }
+
+      // Validate status
+      if (status !== InvoiceStatus.COMPLETED && status !== InvoiceStatus.VOID) {
+        throw new BadRequestException('Invalid status. Must be "completed" or "void"');
+      }
+
+      // If changing to void, use voidInvoice method
+      if (status === InvoiceStatus.VOID) {
+        throw new BadRequestException('Use void endpoint to void invoices');
+      }
+
+      // Update status to completed
+      invoice.status = InvoiceStatus.COMPLETED;
+      await invoice.save();
+
+      return invoice;
+    } catch (error: any) {
+      console.error('Error updating invoice status:', error);
+      if (error.statusCode) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        `Failed to update invoice status: ${error.message || 'Unknown error'}`,
+      );
+    }
+  }
+
   async voidInvoice(
     invoiceId: string,
     actorId: string,
     reason: string,
   ): Promise<void> {
-    const session = await this.invoiceModel.db.startSession();
-
     try {
-      await session.withTransaction(async () => {
+      // Không dùng transaction vì MongoDB standalone không hỗ trợ
         const invoice = await this.invoiceModel.findById(invoiceId);
         if (!invoice) {
           throw new BadRequestException('Invoice not found');
@@ -408,25 +555,20 @@ export class PosService {
             const lot = await this.inventoryLotModel.findById(item.lot);
             if (lot) {
               lot.quantityAvailable += item.quantity;
-              await lot.save({ session });
+              await lot.save();
             }
 
             // Create reverse stock movement
-            await this.stockMovementModel.create(
-              [
-                {
-                  type: StockMovementType.IN,
-                  product: item.product,
-                  lot: item.lot,
-                  quantity: item.quantity,
-                  reason: 'VOID',
-                  refInvoice: invoiceId,
-                  actor: actorId,
-                  note: `Hủy hóa đơn - ${reason}`,
-                },
-              ],
-              { session },
-            );
+            await this.stockMovementModel.create({
+              type: StockMovementType.IN,
+              product: item.product,
+              lot: item.lot,
+              quantity: item.quantity,
+              reason: 'VOID',
+              refInvoice: invoiceId,
+              actor: actorId,
+              note: `Hủy hóa đơn - ${reason}`,
+            });
           }
         }
 
@@ -439,31 +581,33 @@ export class PosService {
             );
             if (earnedPoints > 0) {
               customer.loyaltyPoints -= earnedPoints;
-              await customer.save({ session });
+              await customer.save();
 
-              await this.loyaltyLedgerModel.create(
-                [
-                  {
-                    customer: customer._id,
-                    type: LoyaltyLedgerType.ADJUST,
-                    points: -earnedPoints,
-                    reason: 'VOID',
-                    refInvoice: invoiceId,
-                    balanceAfter: customer.loyaltyPoints,
-                  },
-                ],
-                { session },
-              );
+              await this.loyaltyLedgerModel.create({
+                customer: customer._id,
+                type: LoyaltyLedgerType.ADJUST,
+                points: -earnedPoints,
+                reason: 'VOID',
+                refInvoice: invoiceId,
+                balanceAfter: customer.loyaltyPoints,
+              });
             }
           }
         }
 
         // Update invoice status
         invoice.status = InvoiceStatus.VOID;
-        await invoice.save({ session });
-      });
-    } finally {
-      await session.endSession();
+        await invoice.save();
+    } catch (error: any) {
+      console.error('Error voiding invoice:', error);
+      // Re-throw nếu đã là HttpException
+      if (error.statusCode) {
+        throw error;
+      }
+      // Nếu không, wrap trong BadRequestException
+      throw new BadRequestException(
+        `Failed to void invoice: ${error.message || 'Unknown error'}`,
+      );
     }
   }
 

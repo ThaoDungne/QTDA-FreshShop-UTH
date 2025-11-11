@@ -108,3 +108,13 @@ export class InvoiceQueryDto {
   @IsMongoId()
   cashierId?: string;
 }
+
+export class UpdateInvoiceStatusDto {
+  @ApiProperty({
+    description: 'New status',
+    example: 'completed',
+    enum: ['completed', 'void'],
+  })
+  @IsString()
+  status: string;
+}

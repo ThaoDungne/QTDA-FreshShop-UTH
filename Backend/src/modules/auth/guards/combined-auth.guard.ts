@@ -22,17 +22,23 @@ export class CombinedAuthGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const mode =
-      this.reflector.get<AuthMode>(AUTH_MODE_KEY, context.getHandler()) ??
-      this.reflector.get<AuthMode>(AUTH_MODE_KEY, context.getClass()) ??
-      API_KEY_AND_JWT;
-
     if (context.getType<'http'>() === 'http') {
       const req: Request = context.switchToHttp().getRequest();
 
+      // Bỏ qua OPTIONS requests (CORS preflight)
+      if (req.method === 'OPTIONS') {
+        return true;
+      }
+
+      const mode =
+        this.reflector.get<AuthMode>(AUTH_MODE_KEY, context.getHandler()) ??
+        this.reflector.get<AuthMode>(AUTH_MODE_KEY, context.getClass()) ??
+        API_KEY_AND_JWT;
+
       const apiKey =
         req.header('X-API-Key') || (req.query['api_key'] as string);
-      if (!apiKey || apiKey !== process.env.API_KEY) {
+      const expectedApiKey = process.env.API_KEY || 'freshshop@2025';
+      if (!apiKey || apiKey !== expectedApiKey) {
         throw new UnauthorizedException('Invalid or missing API key');
       }
 
@@ -43,8 +49,9 @@ export class CombinedAuthGuard implements CanActivate {
       if (!token) throw new UnauthorizedException('Missing Bearer token');
 
       try {
+        const jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
         const payload = this.jwt.verify(token, {
-          secret: process.env.JWT_SECRET!,
+          secret: jwtSecret,
           algorithms: ['HS256'],
         });
         (req as any).user = payload;

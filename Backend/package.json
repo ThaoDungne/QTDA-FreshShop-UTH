@@ -19,6 +19,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "nest start --entryFile seed",
+    "import:products": "nest start --entryFile database/seed/import-products",
+    "update:images": "nest start --entryFile database/seed/update-product-images",
+    "reimport:products": "nest start --entryFile database/seed/reimport-products",
     "test:quick": "nest start --entryFile test-quick"
   },
   "dependencies": {

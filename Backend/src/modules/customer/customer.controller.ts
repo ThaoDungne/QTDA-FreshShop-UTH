@@ -34,8 +34,15 @@ export class CustomerController {
   @ApiOperation({ summary: 'Create new customer' })
   @ApiResponse({ status: 201, description: 'Customer created successfully' })
   @ApiResponse({ status: 409, description: 'Phone number already exists' })
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customerService.create(createCustomerDto);
+  @ApiResponse({ status: 400, description: 'Bad request - validation error' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async create(@Body() createCustomerDto: CreateCustomerDto) {
+    try {
+      return await this.customerService.create(createCustomerDto);
+    } catch (error: unknown) {
+      console.error('Error in create customer controller:', error);
+      throw error;
+    }
   }
 
   @Get()

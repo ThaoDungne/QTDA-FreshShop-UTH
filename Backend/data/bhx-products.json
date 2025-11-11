@@ -1,0 +1,842 @@
+[
+  {
+    "name": "Hành lá",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 15000,
+    "sku": "BHX-1",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/232791/bhx/hanh-la-goi-50g_202509051405475742.jpg"
+  },
+  {
+    "name": "Lá giang",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 14000,
+    "sku": "BHX-2",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/233971/bhx/la-giang-1kg_202505090936496792.jpg"
+  },
+  {
+    "name": "Rau nhút làm sạch",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 18000,
+    "sku": "BHX-3",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/238471/bhx/rau-nhut-1kg_202508081105402835.jpg"
+  },
+  {
+    "name": "Rau thơm các loại",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 12000,
+    "sku": "BHX-4",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/271489/bhx/rau-thom-cac-loai-goi-200gr_202505091451086460.jpg"
+  },
+  {
+    "name": "Hành lá",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 6500,
+    "sku": "BHX-5",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/271492/bhx/hanh-la-goi-100g_202505090905332958.jpg"
+  },
+  {
+    "name": "Hẹ lá",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 4900,
+    "sku": "BHX-6",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8820/271502/bhx/he-la-100gr-202401131825186214.jpg"
+  },
+  {
+    "name": "Rau má",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 10000,
+    "sku": "BHX-7",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/271747/bhx/rau-ma-goi-200g_202505081310424357.jpg"
+  },
+  {
+    "name": "Tía tô",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 6500,
+    "sku": "BHX-8",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/299255/bhx/tia-to-goi-100g_202505100849199977.jpg"
+  },
+  {
+    "name": "Rau húng quế",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 6500,
+    "sku": "BHX-9",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/299256/bhx/rau-hung-que-tui-100g_202505091116137552.jpg"
+  },
+  {
+    "name": "Rau húng cây",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 6500,
+    "sku": "BHX-10",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/299257/bhx/rau-hung-cay-100g_202505091057143767.jpg"
+  },
+  {
+    "name": "Rau diếp cá",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 6500,
+    "sku": "BHX-11",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/299258/bhx/rau-diep-ca-goi-100g_202505091413116213.jpg"
+  },
+  {
+    "name": "Rau đắng",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 7200,
+    "sku": "BHX-12",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/299807/bhx/rau-dang-goi-200g_202505091320161114.jpg"
+  },
+  {
+    "name": "Xà lách thủy tinh thủy canh",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 16000,
+    "sku": "BHX-13",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/303824/bhx/xa-lach-thuy-tinh-thuy-canh-cay-tu-230g_202506090948310961.jpg"
+  },
+  {
+    "name": "Ngò rí",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 3500,
+    "sku": "BHX-14",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/309141/bhx/ngo-ri-50g_202505081655119693.jpg"
+  },
+  {
+    "name": "Ngò gai, rau om",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 3500,
+    "sku": "BHX-15",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/309145/bhx/ngo-gai-rau-om-50g_202505091436115549.jpg"
+  },
+  {
+    "name": "Rau ngót",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 10000,
+    "sku": "BHX-16",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/309146/bhx/rau-ngot-250gr_202505201652490353.jpg"
+  },
+  {
+    "name": "Rau răm",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 3500,
+    "sku": "BHX-17",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/309149/bhx/rau-ram-50g_202505091351343680.jpg"
+  },
+  {
+    "name": "Hành lá, ngò rí",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 6900,
+    "sku": "BHX-18",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/320735/bhx/hanh-la-ngo-ri-100gr_202505091428268157.jpg"
+  },
+  {
+    "name": "Bông điên điển",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 20000,
+    "sku": "BHX-19",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/325778/bhx/bong-dien-dien-200g_202505291929376368.jpg"
+  },
+  {
+    "name": "Bông súng",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 9000,
+    "sku": "BHX-20",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8820/325978/bhx/bong-sung-202405220947402439.jpg"
+  },
+  {
+    "name": "Xà lách búp mỡ",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 18000,
+    "sku": "BHX-21",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/336810/bhx/xa-lach-bup-mo-300g_202505210854161280.jpg"
+  },
+  {
+    "name": "Xà lách lô lô xanh",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 18000,
+    "sku": "BHX-22",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/336812/bhx/xa-lach-lo-lo-xanh-300g_202505210852562957.jpg"
+  },
+  {
+    "name": "Rau lang",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 9900,
+    "sku": "BHX-23",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/336819/bhx/rau-lang-300g_202505271421579125.jpg"
+  },
+  {
+    "name": "Cải bẹ dún",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 9900,
+    "sku": "BHX-24",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/222627/bhx/cai-be-dun-tui-400g_202505210849538980.jpg"
+  },
+  {
+    "name": "Cải ngồng",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 9900,
+    "sku": "BHX-25",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/222865/bhx/cai-ngong-tui-300g_202506021524316793.jpg"
+  },
+  {
+    "name": "Rau muống hạt",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 9900,
+    "sku": "BHX-26",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8820/223334/bhx/rau-muong-hat-baby-tui-300g-202011071623155891.jpg"
+  },
+  {
+    "name": "Cải thìa",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 9900,
+    "sku": "BHX-27",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8820/238556/bhx/cai-thia-da-lat-202407090853555309.jpg"
+  },
+  {
+    "name": "Rau mồng tơi",
+    "category": "Rau lá",
+    "unit": "kg",
+    "price": 5000,
+    "sku": "BHX-28",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/298825/bhx/rau-mong-toi-goi-300g_202506020917306037.jpg"
+  },
+  {
+    "name": "Cải ngọt",
+    "category": "Rau lá",
+    "unit": "g",
+    "price": 9900,
+    "sku": "BHX-29",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/223330/bhx/cai-ngot-baby-goi-300g_202506020913508949.jpg"
+  },
+  {
+    "name": "Rau muống nước",
+    "category": "Rau lá",
+    "unit": "g",
+    "price": 5000,
+    "sku": "BHX-30",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/335480/bhx/rau-muong-nuoc-400gr_202505081440524383.jpg"
+  },
+  {
+    "name": "Cải bẹ xanh",
+    "category": "Rau lá",
+    "unit": "g",
+    "price": 9900,
+    "sku": "BHX-31",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8820/335481/bhx/cai-be-xanh-goi-400g_202505151418571429.jpg"
+  },
+  {
+    "name": "Mận đá đường",
+    "category": "Trái cây",
+    "unit": "g",
+    "price": 18000,
+    "sku": "BHX-32",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/344443/bhx/man-da-duong-500gr_202509120953246660.jpg"
+  },
+  {
+    "name": "Táo cherry nội địa Trung + Muối chấm Hảo Hảo tôm chua cay hũ",
+    "category": "Trái cây",
+    "unit": "g",
+    "price": 60100,
+    "sku": "BHX-33",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/357492/bhx/tao-cherry-noi-dia-trung-500g-8-10-trai-clone_202510011428248909.jpg"
+  },
+  {
+    "name": "Combo dừa xiêm tiện lợi",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 36000,
+    "sku": "BHX-34",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/345511/bhx/dua-xiem-tien-loi-1-trai-clone_202509131300382421.jpg"
+  },
+  {
+    "name": "Dừa xiêm tiện lợi",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 15500,
+    "sku": "BHX-35",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/340224/bhx/dua-xiem-tien-loi_202509121102271581.jpg"
+  },
+  {
+    "name": "Dưa gang",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 183001,
+    "sku": "BHX-36",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8788/244445/bhx/dua-gang-trai-tu-500g-tro-len-202404160854571419.jpg"
+  },
+  {
+    "name": "Cóc giống Thái",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 9000,
+    "sku": "BHX-37",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/339552/bhx/coc-giong-thai-500g_202507281535464142.jpg"
+  },
+  {
+    "name": "Xoài keo",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 22000,
+    "sku": "BHX-38",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8788/233096/bhx/xoai-keo-tui-1kg-202012311612450599.jpg"
+  },
+  {
+    "name": "Ổi Đài Loan",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 14500,
+    "sku": "BHX-39",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/226921/bhx/oi-dai-loan-tui-1kg_202507181655372289.jpg"
+  },
+  {
+    "name": "Ổi Đài Loan",
+    "category": "Trái cây",
+    "unit": "g",
+    "price": 26000,
+    "sku": "BHX-40",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/226918/bhx/oi-dai-loan-hop-1-kg_202506181545489072.jpg"
+  },
+  {
+    "name": "Thanh long ruột đỏ trái/kg",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 28500,
+    "sku": "BHX-41",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8788/234065/bhx/thanh-long-ruot-do-202312251505383328.jpg"
+  },
+  {
+    "name": "Dưa lưới tròn ruột cam trái",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 53300,
+    "sku": "BHX-42",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/226931/bhx/dua-luoi-tron-ruot-cam-1kg_202508180927322943.jpg"
+  },
+  {
+    "name": "Mận An Phước",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 34500,
+    "sku": "BHX-43",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8788/232502/bhx/man-an-phuoc-tui-500g-202012171420096493.jpg"
+  },
+  {
+    "name": "Túi mận róc hạt nội địa Trung",
+    "category": "Trái cây",
+    "unit": "túi",
+    "price": 45000,
+    "sku": "BHX-44",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/344496/bhx/man-roc-hat-noi-dia-trung-tui-500g-clone_202509031617569847.jpg"
+  },
+  {
+    "name": "Mận róc hạt nội địa Trung túi",
+    "category": "Trái cây",
+    "unit": "túi",
+    "price": 27700,
+    "sku": "BHX-45",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/342583/bhx/man-roc-hat-noi-dia-trung-hop-500g_202508200937030226.jpg"
+  },
+  {
+    "name": "Hộp nho mẫu đơn nội địa Trung",
+    "category": "Trái cây",
+    "unit": "hộp",
+    "price": 95000,
+    "sku": "BHX-46",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/342371/bhx/nho-mau-don-noi-dia-trung-500g-clone_202508121539524552.jpg"
+  },
+  {
+    "name": "Lê hoàng kim nội địa Trung hộp",
+    "category": "Trái cây",
+    "unit": "hộp",
+    "price": 37000,
+    "sku": "BHX-47",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/342879/bhx/le-hoang-kim-noi-dia-trung-hop-2-trai_202509111129226224.jpg"
+  },
+  {
+    "name": "Kiwi vàng Zespri nhập khẩu New Zealand hộp",
+    "category": "Trái cây",
+    "unit": "hộp",
+    "price": 55000,
+    "sku": "BHX-48",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/340309/bhx/kiwi-vang-zespri-nhap-khau-new-zealand-300g-hop-3-trai_202508091714487135.jpg"
+  },
+  {
+    "name": "Kiwi xanh Zespri nhập khẩu New Zealand hộp",
+    "category": "Trái cây",
+    "unit": "hộp",
+    "price": 39000,
+    "sku": "BHX-49",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/340278/bhx/kiwi-xanh-zespri-nhap-khau-new-zealand-hop-2-trai-clone_202507081515559830.jpg"
+  },
+  {
+    "name": "Cam úc túi",
+    "category": "Trái cây",
+    "unit": "túi",
+    "price": 50500,
+    "sku": "BHX-50",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/341182/bhx/cam-uc-tui-700g-3-trai_202508130859132833.jpg"
+  },
+  {
+    "name": "Táo cherry nội địa Trung",
+    "category": "Trái cây",
+    "unit": "g",
+    "price": 44500,
+    "sku": "BHX-51",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/330603/bhx/tao-cherry-nhap-khau-trung-quoc-500g_202509101039403361.jpg"
+  },
+  {
+    "name": "Táo Gala mini nhập khẩu túi",
+    "category": "Trái cây",
+    "unit": "túi",
+    "price": 27000,
+    "sku": "BHX-52",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/339055/bhx/tao-gala-mini-nhap-khau-new-zealand-tui-400g_202510010911062898.jpg"
+  },
+  {
+    "name": "Quýt Úc túi",
+    "category": "Trái cây",
+    "unit": "túi",
+    "price": 60000,
+    "sku": "BHX-53",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/341537/bhx/quyt-giong-uc-tui-800g-clone_202507251658369170.jpg"
+  },
+  {
+    "name": "Táo Gala nhập khẩu túi lớn",
+    "category": "Trái cây",
+    "unit": "túi",
+    "price": 44500,
+    "sku": "BHX-54",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/341013/bhx/tao-gala-nhap-khau-new-zealand-tui-lon-700g_202510010920299741.jpg"
+  },
+  {
+    "name": "Chuối già giống Nam Mỹ",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 19900,
+    "sku": "BHX-55",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/313132/bhx/chuoi-gia-giong-nam-my-1kg_202505201047413543.jpg"
+  },
+  {
+    "name": "Dưa hấu đỏ",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 35000,
+    "sku": "BHX-56",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8788/226930/bhx/dua-hau-do-202402271437411608.jpg"
+  },
+  {
+    "name": "Táo Nam Phi giòn ngọt túi",
+    "category": "Trái cây",
+    "unit": "túi",
+    "price": 42500,
+    "sku": "BHX-57",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/338730/bhx/tao-nam-phi-gion-ngot-tui-1kg_202508061708408384.jpg"
+  },
+  {
+    "name": "Nho mẫu đơn nội địa Trung",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 49000,
+    "sku": "BHX-58",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8788/312875/bhx/nho-mau-don-noi-dia-trung-500g_202506160955228843.jpg"
+  },
+  {
+    "name": "Cam sành",
+    "category": "Trái cây",
+    "unit": "kg",
+    "price": 15000,
+    "sku": "BHX-59",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8788/226917/bhx/cam-sanh-loai-2-tui-1kg-202101271631264363.jpg"
+  },
+  {
+    "name": "Cam sành",
+    "category": "Trái cây",
+    "unit": "g",
+    "price": 52500,
+    "sku": "BHX-60",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8788/321604/bhx/cam-sanh-202401201943148305.jpg"
+  },
+  {
+    "name": "Nấm đùi gà baby nội địa Trung",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 15000,
+    "sku": "BHX-61",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/226954/bhx/nam-dui-ga-noi-dia-trung-200g_202506261342462467.jpg"
+  },
+  {
+    "name": "Nấm bào ngư trắng",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 16000,
+    "sku": "BHX-62",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8779/226955/bhx/nam-bao-ngu-trang-goi-300g-202212021431259434.jpg"
+  },
+  {
+    "name": "Nấm bào ngư xám",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 20000,
+    "sku": "BHX-63",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8779/226957/bhx/nam-bao-ngu-xam-goi-300g-202211231335446825.jpg"
+  },
+  {
+    "name": "Lẩu nấm thiên nhiên",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 30000,
+    "sku": "BHX-64",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8779/226963/bhx/lau-nam-thien-nhien-khay-300g-202205181652540610.jpg"
+  },
+  {
+    "name": "Nấm hương",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 30000,
+    "sku": "BHX-65",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8779/281521/bhx/nam-huong-hop-150g-202212291513424946.jpg"
+  },
+  {
+    "name": "Nấm rơm",
+    "category": "Nấm các loại",
+    "unit": "g",
+    "price": 20500,
+    "sku": "BHX-66",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/299261/bhx/nam-rom-tui-200g_202506031558555079.jpg"
+  },
+  {
+    "name": "Nấm đùi gà baby Hàn Quốc",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 33000,
+    "sku": "BHX-67",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/313128/bhx/nam-dui-ga-baby-hq-200g_202506191656598864.jpg"
+  },
+  {
+    "name": "Nấm hải sản nội địa Trung",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 9000,
+    "sku": "BHX-68",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/325726/bhx/nam-hai-san-trung-quoc-150g_202506281441302081.jpg"
+  },
+  {
+    "name": "Nấm linh chi nâu nội địa Trung",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 15000,
+    "sku": "BHX-69",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8779/325741/bhx/nam-linh-chi-nau-trung-quoc-150g-202405130926162383.jpg"
+  },
+  {
+    "name": "Nấm linh chi trắng nội địa Trung",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 15000,
+    "sku": "BHX-70",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/325742/bhx/nam-linh-chi-trang-trung-quoc-150g_202506261338175538.jpg"
+  },
+  {
+    "name": "Nấm đùi gà nội địa Trung",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 26000,
+    "sku": "BHX-71",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/337116/bhx/nam-dui-ga-noi-dia-trung-500g_202505201629103306.jpg"
+  },
+  {
+    "name": "Nấm hương",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 21000,
+    "sku": "BHX-72",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/344634/bhx/nam-huong-150g-clone_202509060941323517.jpg"
+  },
+  {
+    "name": "Nấm lộc nhung",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 29000,
+    "sku": "BHX-73",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/345538/bhx/nam-huong-nam-dong-co-150g-clone_202509151008240899.jpg"
+  },
+  {
+    "name": "Nấm kim châm Hàn Quốc",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 14900,
+    "sku": "BHX-74",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8779/226959/bhx/nam-kim-cham-han-quoc-goi-150g-202205181701291485.jpg"
+  },
+  {
+    "name": "Nấm kim châm Thái Lan",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 7000,
+    "sku": "BHX-75",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8779/304603/bhx/nam-kim-cham-thai-lan-150g-202308291048255023.jpg"
+  },
+  {
+    "name": "Nấm kim châm nội địa Trung",
+    "category": "Nấm các loại",
+    "unit": "kg",
+    "price": 6500,
+    "sku": "BHX-76",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8779/309289/bhx/nam-dui-ga-baby-400g_202505201549074761.jpg"
+  },
+  {
+    "name": "Me chua",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 5500,
+    "sku": "BHX-77",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/222877/bhx/me-chua-vat-hop-68g-202205181657130760.jpg"
+  },
+  {
+    "name": "Khoai tây đông lạnh cắt thẳng",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 53000,
+    "sku": "BHX-78",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/7172/239239/bhx/frame-498_202409160837190145.jpg"
+  },
+  {
+    "name": "Tắc",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 6000,
+    "sku": "BHX-79",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/281523/bhx/cdntgddvnproductsimages8785281523bhxtac-trai-tui-200g-202205201627434670_202409041623588924.jpg"
+  },
+  {
+    "name": "Me chua",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 13500,
+    "sku": "BHX-80",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/289628/bhx/me-chua-vat-goi-250g-202209071046501161.jpg"
+  },
+  {
+    "name": "Sả cây",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 6000,
+    "sku": "BHX-81",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/292740/bhx/cdntgddvnproductsimages8785292740bhxsa-cay-goi-200g-202210031601138393_202409041611032864.jpg"
+  },
+  {
+    "name": "Ớt xiêm xanh",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 7000,
+    "sku": "BHX-82",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/292789/bhx/cdntgddvnproductsimages8785292789bhxot-xiem-xanh-goi-50g-202212280919477406_202409041609438114.jpg"
+  },
+  {
+    "name": "Bạc hà",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 7500,
+    "sku": "BHX-83",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/299254/bhx/bac-ha-khay-200g-202212090822417059.jpg"
+  },
+  {
+    "name": "Đậu rồng",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 14000,
+    "sku": "BHX-84",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/299805/bhx/dau-rong-tui-200g_202508111415489409.jpg"
+  },
+  {
+    "name": "Tiêu xanh",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 9500,
+    "sku": "BHX-85",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/299806/bhx/cdntgddvnproductsimages8785299806bhxtieu-xanh-tui-50g-202212280833064038_202409041619286474.jpg"
+  },
+  {
+    "name": "Cà pháo",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 8000,
+    "sku": "BHX-86",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/301611/bhx/ca-phao-vi-200g-202301110814528714.jpg"
+  },
+  {
+    "name": "Hành tây",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 10500,
+    "sku": "BHX-87",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/341490/bhx/hanh-tay-cu-tu-100g-tro-len-clone_202507250820074811.jpg"
+  },
+  {
+    "name": "Cà rốt",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 8700,
+    "sku": "BHX-88",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/341668/bhx/ca-rot-trai-tu-150g-tro-len-clone_202507300953258733.jpg"
+  },
+  {
+    "name": "Mướp hương",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 6250,
+    "sku": "BHX-89",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/341878/bhx/muop-huong-trai-tu-150g-tro-len-clone_202508041543006128.jpg"
+  },
+  {
+    "name": "Cà chua",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 13500,
+    "sku": "BHX-90",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/343139/bhx/ca-chua-trai-tu-60g-tro-len-clone_202508291409432547.jpg"
+  },
+  {
+    "name": "Ớt hiểm",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 5000,
+    "sku": "BHX-91",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/271666/bhx/ot-hiem-trai-goi-50g_202504111557363397.jpg"
+  },
+  {
+    "name": "Tỏi cô đơn",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 25000,
+    "sku": "BHX-92",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/309138/bhx/toi-co-don-200g_202508080921347540.jpg"
+  },
+  {
+    "name": "Tỏi tím Trung Quốc",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 16000,
+    "sku": "BHX-93",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/309135/bhx/toi-tim-trung-quoc-200g_202508080921418554.jpg"
+  },
+  {
+    "name": "Hành tím",
+    "category": "Củ, quả",
+    "unit": "túi",
+    "price": 15000,
+    "sku": "BHX-94",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/309133/bhx/hanh-tim-200g-202306080954084413.jpg"
+  },
+  {
+    "name": "Đậu bắp",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 9000,
+    "sku": "BHX-95",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/271743/bhx/dau-bap-khay-250g-12-18-trai-202205201719355505.jpg"
+  },
+  {
+    "name": "Đậu cove",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 16000,
+    "sku": "BHX-96",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/338607/bhx/dau-cove-250g_202507121102147295.jpg"
+  },
+  {
+    "name": "Khổ qua",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 18000,
+    "sku": "BHX-97",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/291352/bhx/kho-qua-khay-500g-3-5-trai_202508200922517500.jpg"
+  },
+  {
+    "name": "Chanh không hạt",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 7500,
+    "sku": "BHX-98",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/299252/bhx/chanh-khong-hat-tui-250g-2-4-trai_202508111322412533.jpg"
+  },
+  {
+    "name": "Dưa leo baby",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 12000,
+    "sku": "BHX-99",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/338608/bhx/dua-leo-baby-500g-8-10-trai-clone_202505241348306869.jpg"
+  },
+  {
+    "name": "Dưa leo",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 19000,
+    "sku": "BHX-100",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/226881/bhx/dua-leo-vi-500g-202009292350248147.jpg"
+  },
+  {
+    "name": "Bí xanh",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 10500,
+    "sku": "BHX-101",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/312962/bhx/bi-xanh-500g_202507291531597095.jpg"
+  },
+  {
+    "name": "Bầu sao",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 10500,
+    "sku": "BHX-102",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/312963/bhx/bau-sao-500g_202507291538440211.jpg"
+  },
+  {
+    "name": "Bí đỏ hồ lô",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 15000,
+    "sku": "BHX-103",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/278777/bhx/cdntgddvnproductsimages8785232929bhxbi-do-ho-lo-tui-700g-202012282211425458_202409241058208166.jpg"
+  },
+  {
+    "name": "Bí đỏ tròn",
+    "category": "Củ, quả",
+    "unit": "kg",
+    "price": 6500,
+    "sku": "BHX-104",
+    "imageUrl": "https://cdnv2.tgdd.vn/bhx-static/bhx/Products/Images/8785/341597/bhx/bi-do-tron-1-2-mieng-kg-clone_202507281638224046.jpg"
+  },
+  {
+    "name": "Bắp mỹ",
+    "category": "Củ, quả",
+    "unit": "g",
+    "price": 10000,
+    "sku": "BHX-105",
+    "imageUrl": "https://cdn.tgdd.vn/Products/Images/8785/241815/bhx/bap-my-202403190859387885.jpg"
+  }
+]

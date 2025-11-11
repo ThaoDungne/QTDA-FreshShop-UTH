@@ -6,6 +6,7 @@ import {
   IsDateString,
   IsNumber,
   Min,
+  IsEmail,
 } from 'class-validator';
 import { Gender } from '../../../common/enums';
 
@@ -17,6 +18,14 @@ export class CreateCustomerDto {
   @ApiProperty({ description: 'Phone number', example: '0901234567' })
   @IsString()
   phone: string;
+
+  @ApiPropertyOptional({
+    description: 'Email address',
+    example: 'customer@example.com',
+  })
+  @IsOptional()
+  @IsEmail()
+  email?: string;
 
   @ApiPropertyOptional({
     description: 'Gender',
@@ -56,6 +65,11 @@ export class UpdateCustomerDto {
   @IsOptional()
   @IsString()
   fullName?: string;
+
+  @ApiPropertyOptional({ description: 'Email address' })
+  @IsOptional()
+  @IsEmail()
+  email?: string;
 
   @ApiPropertyOptional({ description: 'Gender' })
   @IsOptional()

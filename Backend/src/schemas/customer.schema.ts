@@ -12,6 +12,9 @@ export class Customer {
   @Prop({ required: true, trim: true })
   phone: string;
 
+  @Prop({ trim: true, lowercase: true })
+  email?: string;
+
   @Prop({ enum: Object.values(Gender) })
   gender?: string;
 

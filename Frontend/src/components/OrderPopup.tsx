@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { IoMdSearch } from "react-icons/io";
+import { saleService } from "../services";
+import { customerService } from "../services";
+import { authService } from "../services";
 
 interface OrderItem {
   id: string;
@@ -6,6 +10,16 @@ interface OrderItem {
   price: number;
   quantity: number;
   total: number;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  image: string;
+  price: string;
+  priceNumber: number;
+  unit: string;
+  category: string;
 }
 
 interface OrderPopupProps {
@@ -18,7 +32,8 @@ interface OrderPopupProps {
     totalAmount: number;
   }) => void;
   preAddedItems?: OrderItem[];
-  onUpdateCart?: (updatedItems: OrderItem[]) => void; // 👈 thêm props mới
+  onUpdateCart?: (updatedItems: OrderItem[]) => void;
+  availableProducts?: Product[]; // Danh sách sản phẩm từ Sales page
 }
 
 const OrderPopup: React.FC<OrderPopupProps> = ({
@@ -27,32 +42,43 @@ const OrderPopup: React.FC<OrderPopupProps> = ({
   onConfirm,
   preAddedItems = [],
   onUpdateCart,
+  availableProducts = [],
 }) => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [productSearchTerm, setProductSearchTerm] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const isInitialMount = useRef(true);
 
   // Khi mở popup, nạp giỏ hàng hiện tại
   useEffect(() => {
     if (isOpen) {
+      isInitialMount.current = true;
       setOrderItems(preAddedItems);
     }
   }, [isOpen, preAddedItems]);
 
-  // Danh sách sản phẩm có sẵn
-  const availableProducts = [
-    { id: "1", name: "Cà rốt", price: 29000 },
-    { id: "2", name: "Cà chua", price: 45000 },
-    { id: "3", name: "Rau xà lách", price: 20000 },
-    { id: "4", name: "Bông cải xanh", price: 35000 },
-    { id: "5", name: "Hành tây", price: 35000 },
-    { id: "6", name: "Ớt chuông", price: 70000 },
-    { id: "7", name: "Dưa chuột", price: 21000 },
-    { id: "8", name: "Rau chân vịt", price: 18000 },
-  ];
+  // Đồng bộ orderItems với parent component (Sales) khi thay đổi
+  // Nhưng không gọi khi mới mở popup (tránh vòng lặp)
+  useEffect(() => {
+    if (isOpen && onUpdateCart && !isInitialMount.current) {
+      onUpdateCart(orderItems);
+    }
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    }
+  }, [orderItems, isOpen, onUpdateCart]); // Chỉ chạy khi orderItems thay đổi và popup đang mở
+
+  // Lọc sản phẩm theo search term
+  const filteredProducts = availableProducts.filter((product) =>
+    product.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
+    product.category.toLowerCase().includes(productSearchTerm.toLowerCase())
+  );
 
   // Thêm sản phẩm
-  const addItem = (product: { id: string; name: string; price: number }) => {
+  const addItem = (product: Product) => {
     setOrderItems((items) => {
       const existing = items.find((i) => i.id === product.id);
       const updated =
@@ -71,12 +97,11 @@ const OrderPopup: React.FC<OrderPopupProps> = ({
             {
               id: product.id,
               name: product.name,
-              price: product.price,
+              price: product.priceNumber,
               quantity: 1,
-              total: product.price,
+              total: product.priceNumber,
             },
           ];
-      onUpdateCart?.(updated); // 👈 đồng bộ về Sales
       return updated;
     });
   };
@@ -84,26 +109,19 @@ const OrderPopup: React.FC<OrderPopupProps> = ({
   // Cập nhật số lượng
   const updateQuantity = (id: string, quantity: number) => {
     setOrderItems((items) => {
-      let updated;
       if (quantity <= 0) {
-        updated = items.filter((i) => i.id !== id);
+        return items.filter((i) => i.id !== id);
       } else {
-        updated = items.map((i) =>
+        return items.map((i) =>
           i.id === id ? { ...i, quantity, total: quantity * i.price } : i
         );
       }
-      onUpdateCart?.(updated);
-      return updated;
     });
   };
 
   // Xóa sản phẩm
   const removeItem = (id: string) => {
-    setOrderItems((items) => {
-      const updated = items.filter((i) => i.id !== id);
-      onUpdateCart?.(updated); // 👈 báo về Sales để xóa thật
-      return updated;
-    });
+    setOrderItems((items) => items.filter((i) => i.id !== id));
   };
 
   // Tổng tiền
@@ -111,47 +129,190 @@ const OrderPopup: React.FC<OrderPopupProps> = ({
     orderItems.reduce((sum, i) => sum + i.total, 0);
 
   // Xác nhận đơn hàng
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!customerName.trim() || !customerPhone.trim() || orderItems.length === 0) {
       alert("Vui lòng điền đầy đủ thông tin và chọn sản phẩm!");
       return;
     }
 
-    onConfirm({
-      customerName,
-      customerPhone,
-      items: orderItems,
-      totalAmount: getTotalAmount(),
-    });
+    try {
+      setIsSubmitting(true);
+      setError(null);
 
-    // Reset popup & giỏ hàng
+      // 1. Lấy thông tin user hiện tại (cashierId)
+      const currentUser = authService.getCurrentUser();
+      if (!currentUser || !currentUser.id) {
+        throw new Error("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
+      }
+      const cashierId = currentUser.id;
+
+      // 2. Tìm hoặc tạo customer từ name và phone
+      let customerId: string | undefined;
+      try {
+        // Tìm customer theo phone
+        const customers = await customerService.search(customerPhone);
+        const existingCustomer = customers.find(
+          (c) => c.phone === customerPhone.trim()
+        );
+
+        if (existingCustomer) {
+          customerId = existingCustomer._id;
+        } else {
+          // Tạo customer mới
+          const newCustomer = await customerService.create({
+            fullName: customerName.trim(),
+            phone: customerPhone.trim(),
+          });
+          customerId = newCustomer._id;
+        }
+      } catch (err) {
+        console.error("Error finding/creating customer:", err);
+        // Nếu không tìm/tạo được customer, vẫn tiếp tục với customerId = undefined
+      }
+
+      // 3. Chuyển đổi items sang format API
+      const invoiceItems = orderItems.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        discount: 0, // Có thể thêm discount sau
+      }));
+
+      // 4. Gọi API tạo đơn hàng
+      const invoice = await saleService.createInvoice({
+        cashierId,
+        customerId,
+        items: invoiceItems,
+        paidAmount: getTotalAmount(),
+        paymentMethod: "cash",
+        note: `Khách hàng: ${customerName} - ${customerPhone}`,
+      });
+
+      // 5. Thành công - gọi callback và reset
+      onConfirm({
+        customerName,
+        customerPhone,
+        items: orderItems,
+        totalAmount: getTotalAmount(),
+      });
+
+      // Reset popup & giỏ hàng
+      setCustomerName("");
+      setCustomerPhone("");
+      setOrderItems([]);
+      onUpdateCart?.([]);
+      onClose();
+
+      // Hiển thị thông báo thành công
+      alert(`Đơn hàng đã được tạo thành công!\nMã hóa đơn: ${invoice.code}`);
+    } catch (err: any) {
+      console.error("Error creating invoice:", err);
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Không thể tạo đơn hàng. Vui lòng thử lại.";
+      setError(errorMessage);
+      alert(`Lỗi: ${errorMessage}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Xử lý đóng popup (Hủy hoặc click nút X)
+  const handleClose = () => {
+    // Xóa tất cả sản phẩm trong giỏ hàng khi hủy
+    setOrderItems([]);
+    onUpdateCart?.([]); // Xóa giỏ hàng trong Sales
     setCustomerName("");
     setCustomerPhone("");
-    setOrderItems([]);
-    onUpdateCart?.([]); // 👈 làm trống luôn bên Sales
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex justify-end items-center animate-fadeIn p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl h-[90vh] flex flex-col border-2 border-emerald-100 animate-slideIn">
-        {/* Header */}
-        <div className="flex justify-between items-center px-6 py-4 bg-emerald-50 border-b border-emerald-100">
-          <h2 className="text-xl font-bold text-emerald-700">
-            Tạo đơn hàng mới
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-2xl text-emerald-600 hover:bg-emerald-100 px-2 rounded transition"
-          >
-            ×
-          </button>
+    <div className="fixed left-56 top-0 right-0 bottom-0 z-40 bg-white flex flex-col h-screen">
+      {/* Header */}
+      <div className="flex justify-between items-center px-6 py-4 bg-emerald-50 border-b border-emerald-100 flex-shrink-0">
+        <h2 className="text-xl font-bold text-emerald-700">
+          Tạo đơn hàng mới
+        </h2>
+        <button
+          onClick={handleClose}
+          className="text-2xl text-emerald-600 hover:bg-emerald-100 px-2 rounded transition"
+        >
+          ×
+        </button>
+      </div>
+
+      {/* Content - Layout 2 cột - có thể scroll */}
+      <div className="flex-1 flex overflow-hidden min-h-0">
+        {/* Cột trái: Danh sách sản phẩm */}
+        <div className="w-2/3 border-r border-emerald-100 overflow-y-auto p-6">
+          <h3 className="text-emerald-700 font-semibold mb-4 text-lg">
+            Chọn sản phẩm
+          </h3>
+
+          {/* Search bar cho sản phẩm */}
+          <div className="mb-4">
+            <div className="relative">
+              <IoMdSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+              <input
+                type="text"
+                spellCheck={false}
+                placeholder="Tìm kiếm sản phẩm..."
+                value={productSearchTerm}
+                onChange={(e) => setProductSearchTerm(e.target.value)}
+                className="w-full border border-emerald-300 rounded-xl pl-12 pr-5 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm transition-all duration-300"
+              />
+            </div>
+          </div>
+
+          {/* Grid sản phẩm - 3 cột */}
+          <div className="grid grid-cols-3 gap-4">
+            {filteredProducts.length === 0 ? (
+              <div className="col-span-3 text-center py-10">
+                <p className="text-gray-500">Không tìm thấy sản phẩm nào</p>
+              </div>
+            ) : (
+              filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-emerald-100 overflow-hidden cursor-pointer"
+                  onClick={() => addItem(product)}
+                >
+                  <div className="h-40 flex items-center justify-center bg-gradient-to-br from-lime-50 to-emerald-50 p-4">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="max-h-full object-contain rounded-xl"
+                    />
+                  </div>
+                  <div className="p-4 text-center">
+                    <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-2">
+                      {product.name}
+                    </h4>
+                    <p className="text-emerald-600 font-medium text-sm mb-3">
+                      {product.price}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addItem(product);
+                      }}
+                      className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium py-2 rounded-lg transition"
+                    >
+                      Thêm
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* Cột phải: Form đơn hàng */}
+        <div className="w-1/3 overflow-y-auto p-6 bg-emerald-50">
           {/* Thông tin khách hàng */}
           <div className="mb-6">
             <h3 className="text-emerald-700 font-semibold mb-4">
@@ -166,7 +327,7 @@ const OrderPopup: React.FC<OrderPopupProps> = ({
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 placeholder="Nhập tên khách hàng"
-                className="w-full border border-emerald-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className="w-full border border-emerald-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-white"
               />
             </div>
             <div>
@@ -178,34 +339,8 @@ const OrderPopup: React.FC<OrderPopupProps> = ({
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 placeholder="Nhập số điện thoại"
-                className="w-full border border-emerald-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className="w-full border border-emerald-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-white"
               />
-            </div>
-          </div>
-
-          {/* Chọn sản phẩm */}
-          <div className="mb-6">
-            <h3 className="text-emerald-700 font-semibold mb-4">
-              Chọn sản phẩm
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {availableProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="border border-emerald-100 bg-emerald-50 rounded-xl p-3 text-center hover:bg-emerald-100 transition"
-                >
-                  <p className="font-semibold text-gray-800">{product.name}</p>
-                  <p className="text-emerald-600 text-sm mb-2">
-                    {product.price.toLocaleString()}đ
-                  </p>
-                  <button
-                    onClick={() => addItem(product)}
-                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm py-1.5 rounded-lg transition"
-                  >
-                    Thêm
-                  </button>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -277,22 +412,36 @@ const OrderPopup: React.FC<OrderPopupProps> = ({
             </h3>
           </div>
         </div>
+      </div>
 
-        {/* Footer */}
-        <div className="flex justify-end gap-3 p-5 bg-emerald-50 border-t border-emerald-100">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg"
-          >
-            Hủy
-          </button>
-          <button
-            onClick={handleConfirm}
-            className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg shadow-sm"
-          >
-            Tạo đơn hàng
-          </button>
-        </div>
+      {/* Footer - Nằm dưới cùng, không scroll */}
+      <div className="flex justify-end gap-3 p-5 bg-emerald-50 border-t border-emerald-100 flex-shrink-0">
+        {error && (
+          <div className="flex-1 text-red-600 text-sm mr-4">
+            {error}
+          </div>
+        )}
+        <button
+          onClick={handleClose}
+          disabled={isSubmitting}
+          className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Hủy
+        </button>
+        <button
+          onClick={handleConfirm}
+          disabled={isSubmitting}
+          className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        >
+          {isSubmitting ? (
+            <>
+              <span className="animate-spin">⏳</span>
+              <span>Đang tạo...</span>
+            </>
+          ) : (
+            "Tạo đơn hàng"
+          )}
+        </button>
       </div>
     </div>
   );

@@ -7,6 +7,41 @@ import './common/types/mongoose.types';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Enable CORS
+  app.enableCors({
+    origin: (origin, callback) => {
+      // Cho phép requests không có origin (như Postman, mobile apps)
+      if (!origin) {
+        return callback(null, true);
+      }
+      
+      const allowedOrigins = [
+        'http://localhost:5173', // Vite dev server
+        'http://localhost:3000', // React dev server (nếu có)
+        process.env.FRONTEND_URL,
+      ].filter(Boolean);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Tạm thời cho phép tất cả để dev
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-API-Key',
+      'Accept',
+      'Origin',
+      'X-Requested-With',
+    ],
+    exposedHeaders: ['Authorization', 'X-API-Key'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
   // Enable validation
   app.useGlobalPipes(
     new ValidationPipe({

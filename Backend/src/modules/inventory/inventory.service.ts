@@ -1,6 +1,6 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ClientSession } from 'mongoose';
+import { Model, ClientSession, Types } from 'mongoose';
 import {
   InventoryLot,
   InventoryLotDocument,
@@ -46,88 +46,114 @@ export class InventoryService {
     dto: CreateInventoryLotDto,
     actorId: string,
   ): Promise<InventoryLotDocument> {
-    const session = await this.inventoryLotModel.db.startSession();
-
     try {
-      return await session.withTransaction(async () => {
-        // Validate product exists
-        const product = await this.productModel.findById(dto.productId);
-        if (!product) {
-          throw new BadRequestException('Product not found');
-        }
-
-        // Validate supplier if provided
-        if (dto.supplierId) {
-          const supplier = await this.supplierModel.findById(dto.supplierId);
-          if (!supplier) {
-            throw new BadRequestException('Supplier not found');
-          }
-        }
-
-        // Generate lot code
-        const receivedDate = dto.receivedDate || new Date();
-        const lotCode = this.generateLotCode(
-          product.sku || 'UNKNOWN',
-          receivedDate,
+      // Validate và convert actorId thành ObjectId
+      let actorObjectId: Types.ObjectId;
+      try {
+        actorObjectId = new Types.ObjectId(actorId);
+      } catch (error) {
+        throw new BadRequestException(
+          `Invalid actor ID format: ${actorId}. Must be a valid MongoDB ObjectId.`,
         );
+      }
 
-        // Calculate expiry date
-        const expiryDate = product.expiryDays
-          ? new Date(
-              receivedDate.getTime() + product.expiryDays * 24 * 60 * 60 * 1000,
-            )
-          : undefined;
+      // Validate product exists
+      const product = await this.productModel.findById(dto.productId);
+      if (!product) {
+        throw new BadRequestException('Product not found');
+      }
 
-        // Create inventory lot
-        const lot = new this.inventoryLotModel({
-          product: dto.productId,
-          lotCode,
-          receivedDate,
-          expiryDate,
-          quantityIn: dto.quantityIn,
-          quantityAvailable: dto.quantityIn,
-          costPerUnit: dto.costPerUnit,
-          supplier: dto.supplierId,
-          note: dto.note,
-        });
+      // Validate supplier if provided
+      if (dto.supplierId) {
+        const supplier = await this.supplierModel.findById(dto.supplierId);
+        if (!supplier) {
+          throw new BadRequestException('Supplier not found');
+        }
+      }
 
-        await lot.save({ session });
+      // Generate lot code
+      const receivedDate = dto.receivedDate || new Date();
+      const lotCode = this.generateLotCode(
+        product.sku || 'UNKNOWN',
+        receivedDate,
+      );
 
-        // Create stock movement
-        await this.stockMovementModel.create(
-          [
-            {
-              type: StockMovementType.IN,
-              product: dto.productId,
-              lot: lot._id,
-              quantity: dto.quantityIn,
-              reason: StockMovementReason.PURCHASE,
-              actor: actorId,
-              note: `Nhập lô ${lotCode}`,
-            },
-          ],
-          { session },
-        );
+      // Calculate expiry date
+      const expiryDate = product.expiryDays
+        ? new Date(
+            receivedDate.getTime() + product.expiryDays * 24 * 60 * 60 * 1000,
+          )
+        : undefined;
 
-        return lot;
+      // Create inventory lot
+      const lot = new this.inventoryLotModel({
+        product: dto.productId,
+        lotCode,
+        receivedDate,
+        expiryDate,
+        quantityIn: dto.quantityIn,
+        quantityAvailable: dto.quantityIn,
+        costPerUnit: dto.costPerUnit,
+        supplier: dto.supplierId,
+        note: dto.note,
       });
-    } finally {
-      await session.endSession();
+
+      await lot.save();
+
+      // Create stock movement với actor là ObjectId
+      try {
+        await this.stockMovementModel.create({
+          type: StockMovementType.IN,
+          product: dto.productId,
+          lot: lot._id,
+          quantity: dto.quantityIn,
+          reason: StockMovementReason.PURCHASE,
+          actor: actorObjectId,
+          note: `Nhập lô ${lotCode}`,
+        });
+      } catch (error: any) {
+        console.error('Error creating stock movement:', error);
+        // Nếu tạo stock movement thất bại, xóa lot đã tạo để rollback
+        await this.inventoryLotModel.findByIdAndDelete(lot._id);
+        throw new InternalServerErrorException(
+          `Failed to create stock movement: ${error.message}`,
+        );
+      }
+
+      return lot;
+    } catch (error: any) {
+      console.error('Error in createInventoryLot:', error);
+      // Re-throw nếu đã là HttpException
+      if (error.statusCode) {
+        throw error;
+      }
+      // Nếu không, wrap trong InternalServerErrorException
+      throw new InternalServerErrorException(
+        `Failed to create inventory lot: ${error.message}`,
+      );
     }
   }
 
   async adjustStock(dto: StockAdjustmentDto): Promise<void> {
-    const session = await this.inventoryLotModel.db.startSession();
-
     try {
-      await session.withTransaction(async () => {
-        // Validate product exists
-        const product = await this.productModel.findById(dto.productId);
-        if (!product) {
-          throw new BadRequestException('Product not found');
-        }
+      // Validate và convert actorId thành ObjectId
+      let actorObjectId: Types.ObjectId;
+      try {
+        actorObjectId = new Types.ObjectId(dto.actorId);
+      } catch (error) {
+        throw new BadRequestException(
+          `Invalid actor ID format: ${dto.actorId}. Must be a valid MongoDB ObjectId.`,
+        );
+      }
 
-        if (dto.lotId) {
+      // Validate product exists
+      const product = await this.productModel.findById(dto.productId);
+      if (!product) {
+        throw new BadRequestException('Product not found');
+      }
+
+      // Thực hiện điều chỉnh không dùng transaction (vì MongoDB standalone không hỗ trợ)
+      if (dto.lotId) {
           // Adjust specific lot
           const lot = await this.inventoryLotModel.findById(dto.lotId);
           if (!lot) {
@@ -147,23 +173,18 @@ export class InventoryService {
             lot.quantityAvailable -= decreaseAmount;
           }
 
-          await lot.save({ session });
+          await lot.save();
 
           // Create stock movement
-          await this.stockMovementModel.create(
-            [
-              {
-                type: StockMovementType.ADJUST,
-                product: dto.productId,
-                lot: dto.lotId,
-                quantity: Math.abs(dto.quantity),
-                reason: dto.reason,
-                actor: dto.actorId,
-                note: dto.note,
-              },
-            ],
-            { session },
-          );
+          await this.stockMovementModel.create({
+            type: StockMovementType.ADJUST,
+            product: dto.productId,
+            lot: dto.lotId,
+            quantity: Math.abs(dto.quantity),
+            reason: dto.reason,
+            actor: actorObjectId,
+            note: dto.note,
+          });
         } else {
           // Adjust product total stock (distribute across lots)
           const lots = await this.inventoryLotModel
@@ -185,23 +206,18 @@ export class InventoryService {
               lot.quantityAvailable -= toDecrease;
               remaining -= toDecrease;
 
-              await lot.save({ session });
+              await lot.save();
 
               // Create stock movement for this lot
-              await this.stockMovementModel.create(
-                [
-                  {
-                    type: StockMovementType.ADJUST,
-                    product: dto.productId,
-                    lot: lot._id,
-                    quantity: toDecrease,
-                    reason: dto.reason,
-                    actor: dto.actorId,
-                    note: dto.note,
-                  },
-                ],
-                { session },
-              );
+              await this.stockMovementModel.create({
+                type: StockMovementType.ADJUST,
+                product: dto.productId,
+                lot: lot._id,
+                quantity: toDecrease,
+                reason: dto.reason,
+                actor: actorObjectId,
+                note: dto.note,
+              });
             }
 
             if (remaining > 0) {
@@ -213,7 +229,7 @@ export class InventoryService {
               const firstLot = lots[0];
               firstLot.quantityAvailable += dto.quantity;
               firstLot.quantityIn += dto.quantity;
-              await firstLot.save({ session });
+              await firstLot.save();
             } else {
               // Create new lot
               const lotCode = this.generateLotCode(
@@ -229,28 +245,30 @@ export class InventoryService {
                 costPerUnit: product.price * 0.7, // Default cost
                 note: 'Auto-created for stock adjustment',
               });
-              await newLot.save({ session });
+              await newLot.save();
             }
 
             // Create stock movement
-            await this.stockMovementModel.create(
-              [
-                {
-                  type: StockMovementType.ADJUST,
-                  product: dto.productId,
-                  quantity: dto.quantity,
-                  reason: dto.reason,
-                  actor: dto.actorId,
-                  note: dto.note,
-                },
-              ],
-              { session },
-            );
+            await this.stockMovementModel.create({
+              type: StockMovementType.ADJUST,
+              product: dto.productId,
+              quantity: dto.quantity,
+              reason: dto.reason,
+              actor: actorObjectId,
+              note: dto.note,
+            });
           }
         }
-      });
-    } finally {
-      await session.endSession();
+    } catch (error: any) {
+      console.error('Error in adjustStock:', error);
+      // Re-throw nếu đã là HttpException
+      if (error.statusCode) {
+        throw error;
+      }
+      // Nếu không, wrap trong InternalServerErrorException
+      throw new InternalServerErrorException(
+        `Failed to adjust stock: ${error.message}`,
+      );
     }
   }
 
@@ -328,3 +346,4 @@ export class InventoryService {
     return `${skuCode}-${dateStr}-${random}`;
   }
 }
+
