@@ -161,6 +161,9 @@ yarn test src/services/pos.service.spec.ts
 MONGODB_URI=mongodb://localhost:27017/freshshop
 MONGODB_DB_NAME=freshshop
 PORT=3000
+JWT_SECRET=freshshop-secret-key-2025-change-me
+API_KEY=freshshop@2025
+FRONTEND_URL=http://localhost:5173
 ```
 
 ## 📝 Dữ liệu mẫu
